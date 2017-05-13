@@ -41,15 +41,15 @@ var trivia = [{
 		answer: 3
 	},{
 		question: "Question 4?",
-		choices: ["m", "n", "o", "p"],
+		choices: ["pick me", "n", "o", "p"],
 		answer: 0
 	},{
 		question: "Question 5?",
-		choices: ["q", "r", "s", "t"],
+		choices: ["pick me", "r", "s", "t"],
 		answer: 0
 	},{
 		question: "Question 6?",
-		choices: ["u", "v", "w", "x"],
+		choices: ["pick me", "v", "w", "x"],
 		answer: 0
 }];
 
@@ -67,8 +67,13 @@ function startGame(){
 	$("#button").empty();
 	$("#correct").empty();
 	$("#wrong").empty();
-
-
+	$("#restart-button").empty();
+	questionCount = 0;
+	rightAns = 0;
+	wrongAns = 0;
+	i = -1;
+	showQuestion();
+};
 
 	function showQuestion(){
 		var currentQuestion = trivia[i];
@@ -78,8 +83,10 @@ function startGame(){
 		$("#answerB").html("<h3>" + trivia[i].choices[1] + "</h3>");
 		$("#answerC").html("<h3>" + trivia[i].choices[2] + "</h3>");
 		$("#answerD").html("<h3>" + trivia[i].choices[3] + "</h3>");
+
 		questionCount++;
 		console.log(questionCount);
+		var interval = setInterval(countDown, 1000);
 
 		if (questionCount > 6) {
 			$("#timer").empty();
@@ -90,9 +97,10 @@ function startGame(){
 			$("#answerD").empty();
 			$("#correct").append("Right Answers: " + rightAns);
 			$("#wrong").append("Wrong Answers: " + wrongAns);
-			$("#button").append("<button class=\"btn btn-danger\">Restart!</button>");
+			$("#restart-button").append("<button class=\"btn btn-danger\">Restart!</button>");
+			clearInterval(interval);
 		}
-		
+		// for loop not working properly
 		/*for (var i = 0; i < trivia.length; i++) {
 			$("#question").html("<h3>" + trivia[i].question + "</h3>");
 			$("#answerA").html("<h3>" + trivia[i].choices[0] + "</h3>");
@@ -103,44 +111,41 @@ function startGame(){
 
 	};
 
-	showQuestion();
+	/*$("#answerA").on("click", showQuestion);
+	$("#answerB").on("click", showQuestion);
+	$("#answerC").on("click", showQuestion);
+	$("#answerD").on("click", showQuestion);*/
 
-	var timeRemaining = 10;
-	setTimeout(countDown,1000);
+	var timeRemaining = 20;
+	
 
 	function countDown(){
+		
 		timeRemaining--;
-		if(timeRemaining > 0){
-	    	setTimeout(countDown,1000);
-		}
 		
 		$("#timer").html("<h2>You have " + timeRemaining + " seconds to answer the question!");
 
 		if (timeRemaining === 0){
-			$(trivia.answer).css("background-color", "red");
-			$(trivia.answer).css("color", "white");
 			showQuestion();
 			timeRemaining = 10;
-			countDown();
 			$("#timer").html("<h2>You have " + timeRemaining + " seconds to answer the question!");
 		};
 	};
 
+
 	function click(){
 	    var playerClick = ($(this).attr("data-answer"));
 
-		if (playerClick == trivia[i].answer) {
+		if (playerClick === trivia[i].answer) {
 			rightAns++;
 			console.log(rightAns);
-			//showQuestion();
+			showQuestion();
 		}
 
-		if (playerClick != trivia[i].answer) {
+		if (playerClick !== trivia[i].answer) {
 			wrongAns++;
-			//$(trivia[i].answer).css("background-color", "red");
-			//$(trivia[i].answer).css("color", "white");
 			console.log(wrongAns);
-			//showQuestion();
+			showQuestion();
 		}
 	};
 
@@ -149,7 +154,7 @@ function startGame(){
 	$("#answerC").on("click", click);
 	$("#answerD").on("click", click);
 
-};
+
 
 
 /*//Show the question after start button is clicked.
