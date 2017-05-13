@@ -28,12 +28,12 @@
 */
 
 var trivia = [{
-		question: "This 90s MTV show was hosted by two sock puppets, joined by their friends Chester and Precious Roy:",
+		question: "This 90s MTV show was hosted by two sock puppets:",
 		choices: ["Beavis & Butthead", "Clone High", "Sifl & Olly", "The Brothers Grunt"],
 		answer: 2
 	},{
 		question: "What Texas band had an unlikely Billboard Modern Rock #1 hit in 1996 with their song \"Pepper\"?",
-		choices: ["Toadies", "Butthole Surfers", "Tripping Daisy", "h"],
+		choices: ["Toadies", "Butthole Surfers", "Tripping Daisy", "Spoon"],
 		answer: 1
 	},{
 		question: "Who didn't appear as themselves in an episode of The Simpsons?",
@@ -42,11 +42,11 @@ var trivia = [{
 	},{
 		question: "Question 4?",
 		choices: ["m", "n", "o", "p"],
-		answer: 1
+		answer: 0
 	},{
 		question: "Question 5?",
 		choices: ["q", "r", "s", "t"],
-		answer: 1
+		answer: 0
 	},{
 		question: "Question 6?",
 		choices: ["u", "v", "w", "x"],
@@ -55,20 +55,57 @@ var trivia = [{
 
 var rightAns = 0;
 var wrongAns = 0;
-//var playerChoices = [];
+var i = -1;
+var questionCount = 0;
+
+$("#answerA").attr("data-answer", 0);
+$("#answerB").attr("data-answer", 1);
+$("#answerC").attr("data-answer", 2);
+$("#answerD").attr("data-answer", 3);
 
 function startGame(){
 	$("#button").empty();
+	$("#correct").empty();
+	$("#wrong").empty();
 
-	for (var i = 0; i < trivia.length; i++) {
+
+
+	function showQuestion(){
+		var currentQuestion = trivia[i];
+		i = (i+1) % trivia.length;
 		$("#question").html("<h3>" + trivia[i].question + "</h3>");
 		$("#answerA").html("<h3>" + trivia[i].choices[0] + "</h3>");
 		$("#answerB").html("<h3>" + trivia[i].choices[1] + "</h3>");
 		$("#answerC").html("<h3>" + trivia[i].choices[2] + "</h3>");
 		$("#answerD").html("<h3>" + trivia[i].choices[3] + "</h3>");
+		questionCount++;
+		console.log(questionCount);
+
+		if (questionCount > 6) {
+			$("#timer").empty();
+			$("#question").empty();
+			$("#answerA").empty();
+			$("#answerB").empty();
+			$("#answerC").empty();
+			$("#answerD").empty();
+			$("#correct").append("Right Answers: " + rightAns);
+			$("#wrong").append("Wrong Answers: " + wrongAns);
+			$("#button").append("<button class=\"btn btn-danger\">Restart!</button>");
+		}
+		
+		/*for (var i = 0; i < trivia.length; i++) {
+			$("#question").html("<h3>" + trivia[i].question + "</h3>");
+			$("#answerA").html("<h3>" + trivia[i].choices[0] + "</h3>");
+			$("#answerB").html("<h3>" + trivia[i].choices[1] + "</h3>");
+			$("#answerC").html("<h3>" + trivia[i].choices[2] + "</h3>");
+			$("#answerD").html("<h3>" + trivia[i].choices[3] + "</h3>");
+		};*/
+
 	};
 
-	var timeRemaining = 30;
+	showQuestion();
+
+	var timeRemaining = 10;
 	setTimeout(countDown,1000);
 
 	function countDown(){
@@ -77,32 +114,42 @@ function startGame(){
 	    	setTimeout(countDown,1000);
 		}
 		
-		$("#timer").html("<h2>You have " + timeRemaining + " seconds remaining to answer all the questions!");
+		$("#timer").html("<h2>You have " + timeRemaining + " seconds to answer the question!");
 
 		if (timeRemaining === 0){
-			$("#timer").empty();
-			$("#question").empty();
-			$("#answerA").empty();
-			$("#answerB").empty();
-			$("#answerC").empty();
-			$("#answerD").empty();
+			$(trivia.answer).css("background-color", "red");
+			$(trivia.answer).css("color", "white");
+			showQuestion();
+			timeRemaining = 10;
+			countDown();
+			$("#timer").html("<h2>You have " + timeRemaining + " seconds to answer the question!");
 		};
-	}
-}
+	};
 
+	function click(){
+	    var playerClick = ($(this).attr("data-answer"));
 
+		if (playerClick == trivia[i].answer) {
+			rightAns++;
+			console.log(rightAns);
+			//showQuestion();
+		}
 
-/*if (playerClick === answer) {
-	rightAns++;
-	console.log(rightAns);
-}
+		if (playerClick != trivia[i].answer) {
+			wrongAns++;
+			//$(trivia[i].answer).css("background-color", "red");
+			//$(trivia[i].answer).css("color", "white");
+			console.log(wrongAns);
+			//showQuestion();
+		}
+	};
 
-if (playerClick != answer) {
-	wrongAns++;
-	$(trivia.answer).css("background-color", "red");
-	$(trivia.answer).css("colocolor", "white");
-	console.log(wrongAns);
-}*/
+	$("#answerA").on("click", click);
+	$("#answerB").on("click", click);
+	$("#answerC").on("click", click);
+	$("#answerD").on("click", click);
+
+};
 
 
 /*//Show the question after start button is clicked.
